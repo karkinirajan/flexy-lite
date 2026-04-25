@@ -4,29 +4,40 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <section class="surface-card section-shell profile-layout">
-  <div class="text-center text-lg-start">
+  <div>
     <p class="eyebrow mb-3">User profile</p>
-    <h1 class="hero-title display-6 mb-3">Welcome, {{ user.first_name|default:user.username }}.</h1>
-    <img class="profile-avatar mb-4" src="{{ user.profile.image.url }}" alt="{{ user.username }} profile image">
-    <div class="info-card text-start">
-      <h2 class="section-title h4 mb-3">Account summary</h2>
-      <p class="mb-2"><strong>Username:</strong> {{ user.username }}</p>
-      <p class="mb-2"><strong>Email:</strong> {{ user.email }}</p>
-      <p class="mb-0"><strong>Profile:</strong> {{ user.profile }}</p>
+    <h1 class="hero-title h3 mb-4">Welcome, {{ user.first_name|default:user.username }}</h1>
+
+    <div class="profile-avatar-wrap">
+      <img class="profile-avatar" src="{{ user.profile.image.url }}" alt="{{ user.username }} profile picture">
+    </div>
+
+    <div class="info-card">
+      <h2 class="section-title h5 mb-3">Account details</h2>
+      <dl class="profile-dl">
+        <dt>Username</dt>
+        <dd>{{ user.username }}</dd>
+        <dt>Email</dt>
+        <dd>{{ user.email }}</dd>
+        <dt>Profile</dt>
+        <dd>{{ user.profile }}</dd>
+      </dl>
     </div>
   </div>
 
-  <div class="auth-card">
+  <div>
     <p class="eyebrow mb-3">Update details</p>
-    <h2 class="section-title h3 mb-3">Keep your account current.</h2>
-    <form method="POST" enctype="multipart/form-data" novalidate>
-      {% csrf_token %}
-      <div class="mb-3">
-        {{ u_form|crispy }}
-        {{ p_form|crispy }}
-      </div>
-      <button class="btn btn-brand btn-lg w-100" type="submit">Save changes</button>
-    </form>
+    <h2 class="section-title h4 mb-3">Keep your account current</h2>
+    <div class="auth-card">
+      <form method="POST" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          {{ u_form|crispy }}
+          {{ p_form|crispy }}
+        </div>
+        <button class="btn btn-brand btn-lg w-100" type="submit">Save changes</button>
+      </form>
+    </div>
   </div>
 </section>
 {% endblock content %}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Isometric package — top face -->
+  <polygon points="16,3 28,9 16,15 4,9" fill="#a6e22e"/>
+  <!-- Left face -->
+  <polygon points="4,9 16,15 16,27 4,21" fill="#78a824"/>
+  <!-- Right face -->
+  <polygon points="28,9 16,15 16,27 28,21" fill="#4d6e18"/>
+  <!-- Edge lines for crisp face separation -->
+  <polyline points="4,9 16,3 28,9" fill="none" stroke="#0b0f18" stroke-width="0.6" stroke-linejoin="round"/>
+  <line x1="16" y1="15" x2="16" y2="27" stroke="#0b0f18" stroke-width="0.6"/>
+  <line x1="16" y1="3"  x2="16" y2="15" stroke="#0b0f18" stroke-width="0.6"/>
+</svg>

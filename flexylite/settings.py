@@ -136,7 +136,7 @@ MEDIA_URL = "/media/"
 
 LOGIN_REDIRECT_URL = "index"
 LOGIN_URL = "login"
-LOGOUT_REDIRECT_URL = "login"
+LOGOUT_REDIRECT_URL = "index"
 
 EMAIL_BACKEND = os.getenv(
     "DJANGO_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
