@@ -1,18 +1,17 @@
-from django.shortcuts import render, redirect
-import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from django.shortcuts import redirect, render
+
+from .forms import ProfileUpdateForm, UserRegisterForm, UserUpdateForm
 
 
 def register(request):
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get("username")
+            user = form.save()
             messages.success(
-                request, f"Your account has been created! You are now able to log in"
+                request, f"Account created for {user.username}. You can sign in now."
             )
             return redirect("login")
     else:
@@ -27,13 +26,11 @@ def profile(request):
         p_form = ProfileUpdateForm(
             request.POST, request.FILES, instance=request.user.profile
         )
-        if u_form.is_valid and p_form.is_valid:
+        if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-        messages.success(
-            request, f"Your account has been created! You are now able to log in"
-        )
-        return redirect("profile")
+            messages.success(request, "Your profile has been updated.")
+            return redirect("profile")
 
     else:
         u_form = UserUpdateForm(instance=request.user)

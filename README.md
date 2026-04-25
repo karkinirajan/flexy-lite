@@ -1,108 +1,111 @@
-# Flexy Lite  
+# Flexy Lite
 
-## Overview  
+## Overview
 
-**Flexy Lite** is an inventory management application tailored for grocery stores. The platform combines a modern interface with robust functionality to streamline inventory tracking, reduce manual errors, and enhance operational efficiency.  
+Flexy Lite is an inventory management application for grocery operations. It uses Django with environment-driven configuration, a responsive Bootstrap 5 UI, and uv for dependency and environment management.
 
----
+## Stack
 
-## Features  
+- Backend: Django + Python
+- Frontend: HTML, CSS, Bootstrap 5
+- Dependency and environment management: uv (`pyproject.toml` + `uv.lock`)
 
-- **Inventory Management**:  
-  - Track and manage stock levels in real time.  
-  - Add, update, and remove inventory items effortlessly.  
+## Prerequisites
 
-- **User-Friendly Interface**:  
-  - Built with CSS and JavaScript for a responsive and visually appealing design.  
+- Python 3.12+
+- uv (<https://docs.astral.sh/uv/getting-started/installation/>)
 
-- **Reporting Tools**:  
-  - Generate reports to analyze inventory trends and optimize stock management.  
+## Quick Start (uv)
 
-- **Cross-Platform Compatibility**:  
-  - Accessible on web browsers for seamless integration into daily operations.  
+1. Clone and enter the project:
 
----
+    ```bash
+    git clone https://github.com/kneeraazon404/flexy-lite.git
+    cd flexy-lite
+    ```
 
-## Technology Stack  
+2. Create or refresh the local virtual environment and install from lock:
 
-- **Frontend**: JavaScript, CSS, HTML  
-- **Backend**: Python  
+    ```bash
+    uv venv .venv
+    uv sync --frozen
+    ```
 
----
+3. Create local environment variables:
 
-## Getting Started  
+    ```bash
+    cp .env.example .env
+    ```
 
-### Prerequisites  
+4. Run database setup and start development server:
 
-Ensure the following are installed:  
-- Python 3.8 or higher  
-- Node.js and npm (for frontend dependencies)  
+    ```bash
+    uv run python manage.py migrate
+    uv run python manage.py runserver
+    ```
 
-### Installation  
+## Environment Variables
 
-1. Clone the repository:  
-   ```bash  
-   git clone https://github.com/kneeraazon404/flexy-lite.git  
-   cd flexy-lite  
-   ```  
+Use `.env.example` as the source of truth. Important keys:
 
-2. **Frontend Setup**:  
-   - Install dependencies:  
-     ```bash  
-     npm install  
-     ```  
-   - Start the development server:  
-     ```bash  
-     npm start  
-     ```  
+- `DJANGO_SECRET_KEY`
+- `DJANGO_DEBUG`
+- `DJANGO_ALLOWED_HOSTS`
+- `DJANGO_CSRF_TRUSTED_ORIGINS`
+- `DJANGO_DATABASE_URL`
+- `DJANGO_EMAIL_*`
 
-3. **Backend Setup**:  
-   - Navigate to the backend directory (if applicable):  
-     ```bash  
-     cd backend  
-     ```  
-   - Create and activate a virtual environment:  
-     ```bash  
-     python -m venv venv  
-     source venv/bin/activate  # On Windows: venv\Scripts\activate  
-     ```  
-   - Install Python dependencies:  
-     ```bash  
-     pip install -r requirements.txt  
-     ```  
-   - Run the backend server:  
-     ```bash  
-     python manage.py runserver  
-     ```  
+## Common uv Commands
 
-4. Access the application at the provided local development URLs.  
+- Install/update environment from project metadata:
 
----
+   ```bash
+   uv sync
+   ```
 
-## License  
+- Add a dependency:
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.  
+   ```bash
+   uv add <package>
+   ```
 
----
+- Remove a dependency:
 
-## Contributions  
+   ```bash
+   uv remove <package>
+   ```
 
-Contributions are welcome! To contribute:  
+- Update lockfile after dependency changes:
 
-1. Fork the repository.  
-2. Create a feature branch:  
-   ```bash  
-   git checkout -b feature-name  
-   ```  
-3. Commit your changes:  
-   ```bash  
-   git commit -m "Add feature-name"  
-   ```  
-4. Push to your fork:  
-   ```bash  
-   git push origin feature-name  
-   ```  
-5. Open a pull request detailing your changes.  
+   ```bash
+   uv lock
+   ```
 
----
+- Run Django checks:
 
+   ```bash
+   uv run python manage.py check
+   ```
+
+## Deployment Notes
+
+- Set production-safe values:
+  - `DJANGO_DEBUG=false`
+  - strong `DJANGO_SECRET_KEY`
+  - valid `DJANGO_ALLOWED_HOSTS`
+  - valid `DJANGO_CSRF_TRUSTED_ORIGINS`
+- Ensure static collection runs during deploy:
+
+   ```bash
+   uv run python manage.py collectstatic --noinput
+   ```
+
+- Process command is configured in `Procfile`:
+
+   ```bash
+   web: gunicorn flexylite.wsgi:application --log-file -
+   ```
+
+## License
+
+This project is licensed under the MIT License. See `LICENSE` for details.

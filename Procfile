@@ -1,1 +1,1 @@
-web: gunicorn flexylite.wsgi --log-file -
+web: gunicorn flexylite.wsgi:application --log-file -

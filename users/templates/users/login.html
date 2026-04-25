@@ -1,26 +1,29 @@
 {% extends "base.html" %}
-{% block title %} Login{% endblock title %}
+{% block title %}Login{% endblock title %}
 
-{% load crispy_forms_tags %} {% block content %}
-<div class="content-section">
-  <form method="POST">
-    {% csrf_token %}
-    <fieldset class="form-group">
-      <legend class="border-bottom mb-4">Log In</legend>
-      {{ form | crispy }}
-    </fieldset>
-    <div class="form-group">
-      <button class="btn btn-outline-info" type="submit">Login</button>
-      <small class="text-muted ml-2">
-        <a href="{% url 'password_reset'%}">Forgot Password</a>
-      </small>
+{% load crispy_forms_tags %}
+{% block content %}
+<section class="auth-layout">
+  <div class="surface-card auth-card">
+    <p class="eyebrow mb-3">Welcome back</p>
+    <h1 class="auth-title h2 mb-3">Sign in to FlexyLite</h1>
+    <p class="auth-copy mb-4">Review stock levels, update inventory entries, and manage product actions from a single place.</p>
+    <form method="POST" novalidate>
+      {% csrf_token %}
+      <div class="mb-3">
+        {{ form|crispy }}
+      </div>
+      <button class="btn btn-brand btn-lg w-100" type="submit">Log in</button>
+    </form>
+    <div class="d-flex flex-column flex-sm-row gap-2 justify-content-between mt-4">
+      <a class="btn btn-outline-light" href="{% url 'password_reset' %}">Forgot password</a>
+      <a class="btn btn-outline-secondary" href="{% url 'register' %}">Create account</a>
     </div>
-  </form>
-  <div class="border-top pt-3">
-    <small class="text-muted">
-      Need An Account?
-      <a class="ml-2" href="{% url 'register' %}">Sign Up Now</a>
-    </small>
   </div>
-</div>
+  <aside class="surface-card auth-aside">
+    <p class="eyebrow mb-3">Inventory focus</p>
+    <h2 class="section-title h3 mb-3">Stay close to the data that matters.</h2>
+    <p class="mini-copy mb-0">The dashboard is tuned for quick checks, cleaner forms, and faster navigation on smaller screens.</p>
+  </aside>
+</section>
 {% endblock content %}

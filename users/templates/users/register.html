@@ -1,24 +1,26 @@
 {% extends "base.html" %}
-{% block title %} Register{% endblock title %}
+{% block title %}Register{% endblock title %}
 
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="content-section">
-  <form method="POST">
-    {% csrf_token %}
-    <fieldset class="form-group">
-      <legend class="border-bottom mb-4">Join Today</legend>
-      {{ form | crispy }}
-    </fieldset>
-    <div class="form-group">
-      <button class="btn btn-outline-info" type="submit">Sign Up</button>
-    </div>
-  </form>
-  <div class="border-top pt-3">
-    <small class="text-muted">
-      Already Have An Account?
-      <a class="ml-2" href="{% url 'login' %}">Sign In</a>
-    </small>
+<section class="auth-layout">
+  <div class="surface-card auth-card">
+    <p class="eyebrow mb-3">Get started</p>
+    <h1 class="auth-title h2 mb-3">Create your FlexyLite account</h1>
+    <p class="auth-copy mb-4">Set up a workspace for inventory management, then log in to track products and stock changes.</p>
+    <form method="POST" novalidate>
+      {% csrf_token %}
+      <div class="mb-3">
+        {{ form|crispy }}
+      </div>
+      <button class="btn btn-brand btn-lg w-100" type="submit">Sign up</button>
+    </form>
   </div>
-</div>
+  <aside class="surface-card auth-aside">
+    <p class="eyebrow mb-3">Already onboard?</p>
+    <h2 class="section-title h3 mb-3">Use the same account across devices.</h2>
+    <p class="mini-copy mb-4">Return to your dashboard to review stock, edit entries, and keep product changes consistent.</p>
+    <a class="btn btn-outline-light w-100" href="{% url 'login' %}">Sign in instead</a>
+  </aside>
+</section>
 {% endblock content %}

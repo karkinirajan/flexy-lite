@@ -1,46 +1,90 @@
-from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
+from django.db.models import Sum
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
+
 from .forms import ProductForm
 from .models import Product
 
-# Create your views here.
+
+def is_superuser(user):
+    return user.is_authenticated and user.is_superuser
+
+
 def index(request):
     products = Product.objects.all()
-    return render(request, "index.html", {"products": products})
+    inventory_summary = products.aggregate(total_units=Sum("quantity"))
+    context = {
+        "products": products,
+        "product_count": products.count(),
+        "total_units": inventory_summary["total_units"] or 0,
+    }
+    return render(request, "index.html", context)
 
 
 def about(request):
     return render(request, "about.html")
 
 
+@user_passes_test(is_superuser)
 def addnew(request):
-    if request.method == "POST":
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            try:
-                form.save()
-                return redirect("/")
-            except:
-                pass
-    else:
-        form = ProductForm()
-    return render(request, "index.html", {"form": form})
-
-
-def edit(request, id):
-    product = Product.objects.get(id=id)
-    return render(request, "edit.html", {"product": product})
-
-
-def update(request, id):
-    product = Product.objects.get(id=id)
-    form = ProductForm(request.POST, instance=Product)
-    if form.is_valid():
+    form = ProductForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
         form.save()
-        return redirect("/")
-    return render(request, "edit.html", {"product": product})
+        messages.success(request, "Product created successfully.")
+        return redirect("index")
+    return render(
+        request,
+        "edit.html",
+        {
+            "form": form,
+            "page_title": "Add product",
+            "submit_label": "Create product",
+        },
+    )
 
 
+@user_passes_test(is_superuser)
+def edit(request, id):
+    product = get_object_or_404(Product, pk=id)
+    form = ProductForm(instance=product)
+    return render(
+        request,
+        "edit.html",
+        {
+            "form": form,
+            "product": product,
+            "page_title": "Edit product",
+            "submit_label": "Save changes",
+        },
+    )
+
+
+@user_passes_test(is_superuser)
+def update(request, id):
+    product = get_object_or_404(Product, pk=id)
+    form = ProductForm(request.POST or None, instance=product)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Product updated successfully.")
+        return redirect("index")
+    return render(
+        request,
+        "edit.html",
+        {
+            "form": form,
+            "product": product,
+            "page_title": "Edit product",
+            "submit_label": "Save changes",
+        },
+    )
+
+
+@user_passes_test(is_superuser)
+@require_POST
 def destroy(request, id):
-    product = Product.objects.get(id=id)
+    product = get_object_or_404(Product, pk=id)
     product.delete()
-    return redirect("/")
+    messages.success(request, "Product deleted.")
+    return redirect("index")

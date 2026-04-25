@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Product(models.Model):
     p_sku = models.CharField(max_length=255)
@@ -14,3 +15,6 @@ class Product(models.Model):
 
     class Meta:
         db_table = "products"
+        ordering = ["-date_created"]
+        verbose_name = "Product"
+        verbose_name_plural = "Products"

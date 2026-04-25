@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ page_title }}{% endblock title %}
+
+{% block content %}
+<section class="surface-card section-shell mx-auto" style="max-width: 920px;">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4">
+        <div>
+            <p class="eyebrow mb-2">Inventory editor</p>
+            <h1 class="section-title h2 mb-2">{{ page_title }}</h1>
+            <p class="section-copy mb-0">Use this form to create or update a product record.</p>
+        </div>
+        <a class="btn btn-outline-light" href="{% url 'index' %}">Back to inventory</a>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form|crispy }}
+        </div>
+        <div class="d-flex flex-column flex-sm-row gap-2">
+            <button class="btn btn-brand btn-lg" type="submit">{{ submit_label }}</button>
+            <a class="btn btn-outline-light btn-lg" href="{% url 'index' %}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock content %}

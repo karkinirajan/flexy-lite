@@ -1,16 +1,10 @@
 # forms.py
 from django import forms
+
 from .models import Product
 
 
 class ProductForm(forms.ModelForm):
-    # https://docs.djangoproject.com/en/3.0/ref/forms/widgets/
-    widgets = {
-        "name": forms.TextInput(attrs={"class": "form-control"}),
-        "email": forms.EmailInput(attrs={"class": "form-control"}),
-        "contact": forms.TextInput(attrs={"class": "form-control"}),
-    }
-
     class Meta:
         model = Product
         fields = [
@@ -19,5 +13,28 @@ class ProductForm(forms.ModelForm):
             "quantity",
             "action",
             "location",
-            # "date_created",
         ]
+        widgets = {
+            "p_sku": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Product SKU"}
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 4,
+                    "placeholder": "Product description",
+                }
+            ),
+            "quantity": forms.NumberInput(
+                attrs={"class": "form-control", "min": 0, "placeholder": "0"}
+            ),
+            "action": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Restock, audit, dispatch",
+                }
+            ),
+            "location": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Aisle, shelf, or zone"}
+            ),
+        }

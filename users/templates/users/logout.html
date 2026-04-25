@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %} Logout{% endblock title %}
+{% block title %}Logout{% endblock title %}
 
 {% block content %}
-<h2>You have been logged out</h2>
-<div class="border-top pt-3">
-  <small class="text-muted">
-    <a href="{% url 'login' %}">Log In Again</a>
-  </small>
-</div>
+<section class="surface-card auth-card text-center mx-auto" style="max-width: 720px;">
+  <p class="eyebrow mb-3">Session ended</p>
+  <h1 class="auth-title h2 mb-3">You have been logged out.</h1>
+  <p class="auth-copy mx-auto mb-4">Sign in again when you are ready to continue managing products and stock.</p>
+  <a class="btn btn-brand btn-lg" href="{% url 'login' %}">Log in again</a>
+</section>
 {% endblock content %}
