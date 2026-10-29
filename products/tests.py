@@ -29,7 +29,9 @@ class ProductModelTest(TestCase):
 class IndexViewTest(TestCase):
     def setUp(self):
         Product.objects.create(p_sku="A", description="desc", quantity=3, location="L", action="N")
-        Product.objects.create(p_sku="B", description="desc2", quantity=7, location="L2", action="N")
+        Product.objects.create(
+            p_sku="B", description="desc2", quantity=7, location="L2", action="N"
+        )
 
     def test_get_200(self):
         response = self.client.get(reverse("index"))
@@ -80,7 +82,13 @@ class SuperuserRequiredViewsTest(TestCase):
         count_before = Product.objects.count()
         response = self.client.post(
             reverse("product_add"),
-            {"p_sku": "NEW", "description": "new prod", "quantity": 5, "location": "B2", "action": "N"},
+            {
+                "p_sku": "NEW",
+                "description": "new prod",
+                "quantity": 5,
+                "location": "B2",
+                "action": "N",
+            },
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Product.objects.count(), count_before + 1)
@@ -94,7 +102,13 @@ class SuperuserRequiredViewsTest(TestCase):
         self.client.login(username="admin", password="pass")
         response = self.client.post(
             reverse("product_update", args=[self.product.id]),
-            {"p_sku": "SKU-X", "description": "updated", "quantity": 99, "location": "L", "action": "N"},
+            {
+                "p_sku": "SKU-X",
+                "description": "updated",
+                "quantity": 99,
+                "location": "L",
+                "action": "N",
+            },
         )
         self.assertEqual(response.status_code, 302)
         self.product.refresh_from_db()

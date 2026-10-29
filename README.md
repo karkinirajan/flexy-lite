@@ -1,111 +1,71 @@
 # Flexy Lite
 
-## Overview
+Inventory management for grocery stores: a public product list with stock totals, and superuser-only screens to add, edit and delete products. Staff accounts have profiles with avatars.
 
-Flexy Lite is an inventory management application for grocery operations. It uses Django with environment-driven configuration, a responsive Bootstrap 5 UI, and uv for dependency and environment management.
+## Features
+
+- Product list with product count and total units in stock (`/`).
+- Add, edit, update and delete products; only superusers can change inventory, and deleting is POST-only.
+- Server-side validation (quantity cannot be negative).
+- Login, logout, registration and a profile page with an avatar (resized to 300x300).
+- Django admin at `/admin/`.
 
 ## Stack
 
-- Backend: Django + Python
-- Frontend: HTML, CSS, Bootstrap 5
-- Dependency and environment management: uv (`pyproject.toml` + `uv.lock`)
+Python 3.13, Django 5.2 LTS, Bootstrap 5 via django-crispy-forms, Pillow, WhiteNoise, gunicorn; SQLite by default or PostgreSQL via `DJANGO_DATABASE_URL`. Versions: [VERSIONS.md](./VERSIONS.md).
 
-## Prerequisites
+## Quickstart
 
-- Python 3.12+
-- uv (<https://docs.astral.sh/uv/getting-started/installation/>)
+Requires [uv](https://docs.astral.sh/uv/).
 
-## Quick Start (uv)
+```bash
+git clone https://github.com/kneeraazon404/flexy-lite.git
+cd flexy-lite
+uv sync --frozen
+export DJANGO_DEBUG=true      # local work only; the secret key falls back to a dev value
+uv run python manage.py migrate
+uv run python manage.py createsuperuser
+uv run python manage.py runserver
+```
 
-1. Clone and enter the project:
+The app reads real environment variables (it does not load `.env` itself); `.env.example` lists the names.
 
-    ```bash
-    git clone https://github.com/kneeraazon404/flexy-lite.git
-    cd flexy-lite
-    ```
+## Configuration
 
-2. Create or refresh the local virtual environment and install from lock:
+| Variable | Default | Purpose |
+|---|---|---|
+| `DJANGO_SECRET_KEY` | required unless `DJANGO_DEBUG=true` | startup fails without it in production |
+| `DJANGO_DEBUG` | `false` | debug mode |
+| `DJANGO_ALLOWED_HOSTS` | `127.0.0.1,localhost` | comma-separated hosts |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | empty | comma-separated origins |
+| `DJANGO_DATABASE_URL` | local SQLite file | any dj-database-url URL |
+| `DJANGO_EMAIL_*` | console backend | SMTP settings |
 
-    ```bash
-    uv venv .venv
-    uv sync --frozen
-    ```
+When `DJANGO_DEBUG=false` the app enables HTTPS redirect, secure cookies and HSTS.
 
-3. Create local environment variables:
+## Testing
 
-    ```bash
-    cp .env.example .env
-    ```
+```bash
+uv run pytest -q
+uv run ruff check . && uv run ruff format --check .
+```
 
-4. Run database setup and start development server:
+41 tests cover products (permissions, CRUD, totals, validation) and users (registration, login, profile). They use `flexylite.settings_test` (in-memory SQLite, temporary media). CI: `.github/workflows/ci.yml`.
 
-    ```bash
-    uv run python manage.py migrate
-    uv run python manage.py runserver
-    ```
+## Project structure
 
-## Environment Variables
+```
+flexylite/   settings, urls, wsgi/asgi, static, settings_test.py
+products/    Product model, forms, views, tests
+users/       profiles, auth views, signals, templates, tests
+templates/   shared templates
+media/       default avatar (uploads are git-ignored)
+```
 
-Use `.env.example` as the source of truth. Important keys:
+## Deployment
 
-- `DJANGO_SECRET_KEY`
-- `DJANGO_DEBUG`
-- `DJANGO_ALLOWED_HOSTS`
-- `DJANGO_CSRF_TRUSTED_ORIGINS`
-- `DJANGO_DATABASE_URL`
-- `DJANGO_EMAIL_*`
-
-## Common uv Commands
-
-- Install/update environment from project metadata:
-
-   ```bash
-   uv sync
-   ```
-
-- Add a dependency:
-
-   ```bash
-   uv add <package>
-   ```
-
-- Remove a dependency:
-
-   ```bash
-   uv remove <package>
-   ```
-
-- Update lockfile after dependency changes:
-
-   ```bash
-   uv lock
-   ```
-
-- Run Django checks:
-
-   ```bash
-   uv run python manage.py check
-   ```
-
-## Deployment Notes
-
-- Set production-safe values:
-  - `DJANGO_DEBUG=false`
-  - strong `DJANGO_SECRET_KEY`
-  - valid `DJANGO_ALLOWED_HOSTS`
-  - valid `DJANGO_CSRF_TRUSTED_ORIGINS`
-- Ensure static collection runs during deploy:
-
-   ```bash
-   uv run python manage.py collectstatic --noinput
-   ```
-
-- Process command is configured in `Procfile`:
-
-   ```bash
-   web: gunicorn flexylite.wsgi:application --log-file -
-   ```
+`Procfile` runs `gunicorn flexylite.wsgi:application`. Set `DJANGO_DEBUG=false`, a strong `DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS` and `DJANGO_DATABASE_URL`, then run `migrate` and `collectstatic --noinput`.
 
 ## License
 
-This project is licensed under the MIT License. See `LICENSE` for details.
+MIT. See `LICENSE`.

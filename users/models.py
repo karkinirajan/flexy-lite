@@ -1,5 +1,7 @@
-from django.db import models
+import os
+
 from django.contrib.auth.models import User
+from django.db import models
 from PIL import Image
 
 
@@ -12,6 +14,15 @@ class profile(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+
+        # Skip resizing when the file is missing (fresh checkout/tests) or is the shared default
+        # image, which must not be rewritten in place.
+        if (
+            not self.image
+            or self.image.name == self._meta.get_field("image").default
+            or not os.path.exists(self.image.path)
+        ):
+            return
 
         img = Image.open(self.image.path)
 

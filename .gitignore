@@ -128,3 +128,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Generated / user content
+staticfiles/
+media/profile_pics/
+.venv/
+.pytest_cache/
+.ruff_cache/

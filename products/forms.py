@@ -5,6 +5,12 @@ from .models import Product
 
 
 class ProductForm(forms.ModelForm):
+    def clean_quantity(self):
+        quantity = self.cleaned_data["quantity"]
+        if quantity < 0:  # the widget's min=0 is only enforced by the browser
+            raise forms.ValidationError("Quantity cannot be negative.")
+        return quantity
+
     class Meta:
         model = Product
         fields = [
@@ -15,9 +21,7 @@ class ProductForm(forms.ModelForm):
             "location",
         ]
         widgets = {
-            "p_sku": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "Product SKU"}
-            ),
+            "p_sku": forms.TextInput(attrs={"class": "form-control", "placeholder": "Product SKU"}),
             "description": forms.Textarea(
                 attrs={
                     "class": "form-control",

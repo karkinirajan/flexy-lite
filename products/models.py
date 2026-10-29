@@ -10,11 +10,11 @@ class Product(models.Model):
     action = models.CharField(max_length=255)
     date_created = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.p_sku
-
     class Meta:
         db_table = "products"
         ordering = ["-date_created"]
         verbose_name = "Product"
         verbose_name_plural = "Products"
+
+    def __str__(self):
+        return self.p_sku
